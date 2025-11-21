@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.smartlogis'
 version = '0.0.1-SNAPSHOT'
-description = 'order-service'
+description = 'delivery-service'
 
 java {
     toolchain {
