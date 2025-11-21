@@ -1,6 +1,5 @@
 package com.smartlogis.deliveryservice.domain.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,11 +8,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.smartlogis.common.utils.QuerydslSortUtils;
 import com.smartlogis.deliveryservice.domain.entity.Delivery;
 import com.smartlogis.deliveryservice.domain.entity.DeliveryStatus;
 import com.smartlogis.deliveryservice.domain.entity.QDelivery;
@@ -37,6 +36,12 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
 	) {
 		QDelivery delivery = QDelivery.delivery;
 
+		OrderSpecifier<?>[] orderSpecifiers = QuerydslSortUtils.toOrderSpecifiers(
+			Delivery.class,
+			"createdAt",
+			pageable.getSort()
+		);
+
 		JPAQuery<Delivery> query = queryFactory
 			.selectFrom(delivery)
 			.where(
@@ -46,11 +51,8 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
 				destinationHubIdEq(destinationHubId),
 				companyDeliveryManagerIdEq(companyDeliveryManagerId),
 				delivery.deletedAt.isNull()
-			);
-
-		for (OrderSpecifier<?> orderSpecifier : getOrderSpecifiers(pageable)) {
-			query.orderBy(orderSpecifier);
-		}
+			)
+			.orderBy(orderSpecifiers);
 
 		List<Delivery> content = query
 			.offset(pageable.getOffset())
@@ -92,26 +94,5 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
 	private BooleanExpression companyDeliveryManagerIdEq(UUID companyDeliveryManagerId) {
 		return companyDeliveryManagerId != null ?
 			QDelivery.delivery.companyDeliveryManagerId.eq(companyDeliveryManagerId) : null;
-	}
-
-	private List<OrderSpecifier<?>> getOrderSpecifiers(Pageable pageable) {
-		List<OrderSpecifier<?>> orders = new ArrayList<>();
-		QDelivery delivery = QDelivery.delivery;
-
-		if (!pageable.getSort().isEmpty()) {
-			pageable.getSort().forEach(order -> {
-				Order direction = order.isAscending() ? Order.ASC : Order.DESC;
-				switch (order.getProperty()) {
-					case "createdAt" -> orders.add(new OrderSpecifier<>(direction, delivery.createdAt));
-					case "updatedAt" -> orders.add(new OrderSpecifier<>(direction, delivery.updatedAt));
-					case "status" -> orders.add(new OrderSpecifier<>(direction, delivery.status));
-					default -> orders.add(new OrderSpecifier<>(direction, delivery.createdAt));
-				}
-			});
-		} else {
-			orders.add(new OrderSpecifier<>(Order.DESC, delivery.createdAt));
-		}
-
-		return orders;
 	}
 }
