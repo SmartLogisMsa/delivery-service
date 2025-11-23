@@ -15,6 +15,7 @@ import com.smartlogis.deliveryservice.domain.entity.DeliveryStatus;
 import com.smartlogis.deliveryservice.domain.exception.DeliveryMessageCode;
 import com.smartlogis.deliveryservice.domain.exception.DeliveryNotFoundException;
 import com.smartlogis.deliveryservice.domain.repository.DeliveryRepository;
+import com.smartlogis.deliveryservice.interfaces.dto.response.DeliveryResponse;
 
 import lombok.RequiredArgsConstructor;
 
