@@ -25,6 +25,25 @@ public class DeliveryService {
 
 	private final DeliveryRepository deliveryRepository;
 
+	@Transactional
+	public Delivery createDelivery(
+		UUID orderId,
+		UUID departureHubId,
+		UUID destinationHubId,
+		String address,
+		UUID receiptUserId
+	) {
+		Delivery delivery = Delivery.create(
+			orderId,
+			departureHubId,
+			destinationHubId,
+			address,
+			receiptUserId
+		);
+
+		return deliveryRepository.save(delivery);
+	}
+
 	@Transactional(readOnly = true)
 	public DeliveryResponse getDelivery(UUID deliveryId) {
 		Delivery delivery = deliveryRepository.findByIdAndDeletedAtIsNull(deliveryId)
