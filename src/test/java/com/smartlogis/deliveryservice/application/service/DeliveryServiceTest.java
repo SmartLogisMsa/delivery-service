@@ -52,6 +52,7 @@ class DeliveryServiceTest {
 			UUID.randomUUID(),
 			UUID.randomUUID(),
 			UUID.randomUUID(),
+			UUID.randomUUID(),
 			"서울시 강남구",
 			UUID.randomUUID()
 		);
@@ -95,6 +96,7 @@ class DeliveryServiceTest {
 		// given
 		UUID orderId = UUID.randomUUID();
 		DeliveryStatus status = DeliveryStatus.HUB_PENDING;
+		UUID productId = UUID.randomUUID();
 		UUID departureHubId = UUID.randomUUID();
 		UUID destinationHubId = UUID.randomUUID();
 		UUID companyDeliveryManagerId = UUID.randomUUID();
@@ -104,6 +106,7 @@ class DeliveryServiceTest {
 
 		Delivery delivery = Delivery.create(
 			orderId,
+			productId,
 			departureHubId,
 			destinationHubId,
 			"서울시 강남구",
@@ -139,6 +142,7 @@ class DeliveryServiceTest {
 		// given
 		UUID deliveryId = UUID.randomUUID();
 		Delivery delivery = Delivery.create(
+			UUID.randomUUID(),
 			UUID.randomUUID(),
 			UUID.randomUUID(),
 			UUID.randomUUID(),

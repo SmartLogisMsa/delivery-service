@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DeliveryRouteEvent {
 	private UUID orderId;
+	private UUID productId;
 	private UUID departureHubId;
 	private UUID destinationHubId;
 	private String address;

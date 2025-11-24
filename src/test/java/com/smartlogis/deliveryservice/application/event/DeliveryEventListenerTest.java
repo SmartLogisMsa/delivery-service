@@ -49,6 +49,7 @@ class DeliveryEventListenerTest {
 	void handleDeliveryRouteEvent_Success() {
 		// given
 		UUID orderId = UUID.randomUUID();
+		UUID productId = UUID.randomUUID();
 		UUID departureHubId = UUID.randomUUID();
 		UUID destinationHubId = UUID.randomUUID();
 		String address = "서울시 강남구";
@@ -72,6 +73,7 @@ class DeliveryEventListenerTest {
 
 		DeliveryRouteEvent event = DeliveryRouteEvent.builder()
 			.orderId(orderId)
+			.productId(productId)
 			.departureHubId(departureHubId)
 			.destinationHubId(destinationHubId)
 			.address(address)
@@ -81,6 +83,7 @@ class DeliveryEventListenerTest {
 
 		Delivery mockDelivery = Delivery.create(
 			orderId,
+			productId,
 			departureHubId,
 			destinationHubId,
 			address,
@@ -89,6 +92,7 @@ class DeliveryEventListenerTest {
 
 		given(deliveryService.createDelivery(
 			eq(orderId),
+			eq(productId),
 			eq(departureHubId),
 			eq(destinationHubId),
 			eq(address),
@@ -105,7 +109,7 @@ class DeliveryEventListenerTest {
 
 		// then
 		then(deliveryService).should(times(1))
-			.createDelivery(orderId, departureHubId, destinationHubId, address, receiptUserId);
+			.createDelivery(orderId, productId, departureHubId, destinationHubId, address, receiptUserId);
 
 		then(deliveryHistoryService).should(times(1))
 			.createDeliveryHistories(mockDelivery, event.getRoutes());
