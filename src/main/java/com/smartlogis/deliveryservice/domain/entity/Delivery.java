@@ -38,6 +38,9 @@ public class Delivery extends AbstractEntity {
 	@Column(name = "order_id", nullable = false)
 	private UUID orderId;
 
+	@Column(name = "product_id", nullable = false)
+	private UUID productId;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	private DeliveryStatus status;
@@ -63,6 +66,7 @@ public class Delivery extends AbstractEntity {
 	@Builder
 	public static Delivery create(
 		UUID orderId,
+		UUID productId,
 		UUID departureHubId,
 		UUID destinationHubId,
 		String address,
@@ -71,6 +75,7 @@ public class Delivery extends AbstractEntity {
 		Delivery delivery = new Delivery();
 		delivery.id = UUID.randomUUID();
 		delivery.orderId = orderId;
+		delivery.productId = productId;
 		delivery.status = DeliveryStatus.HUB_PENDING;
 		delivery.departureHubId = departureHubId;
 		delivery.destinationHubId = destinationHubId;
