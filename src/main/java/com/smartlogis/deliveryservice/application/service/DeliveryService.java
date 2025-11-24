@@ -26,7 +26,7 @@ public class DeliveryService {
 	private final DeliveryRepository deliveryRepository;
 
 	@Transactional
-	public UUID createDelivery(
+	public Delivery createDelivery(
 		UUID orderId,
 		UUID departureHubId,
 		UUID destinationHubId,
@@ -41,9 +41,7 @@ public class DeliveryService {
 			receiptUserId
 		);
 
-		deliveryRepository.save(delivery);
-
-		return delivery.getId();
+		return deliveryRepository.save(delivery);
 	}
 
 	@Transactional(readOnly = true)
