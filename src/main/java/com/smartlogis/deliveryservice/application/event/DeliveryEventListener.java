@@ -28,6 +28,7 @@ public class DeliveryEventListener {
 	public void handleDeliveryRouteEvent(DeliveryRouteEvent event) {
 		Delivery delivery = deliveryService.createDelivery(
 			event.getOrderId(),
+			event.getProductId(),
 			event.getDepartureHubId(),
 			event.getDestinationHubId(),
 			event.getAddress(),

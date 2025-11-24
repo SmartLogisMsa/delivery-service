@@ -28,6 +28,7 @@ public class DeliveryService {
 	@Transactional
 	public Delivery createDelivery(
 		UUID orderId,
+		UUID productId,
 		UUID departureHubId,
 		UUID destinationHubId,
 		String address,
@@ -35,6 +36,7 @@ public class DeliveryService {
 	) {
 		Delivery delivery = Delivery.create(
 			orderId,
+			productId,
 			departureHubId,
 			destinationHubId,
 			address,
