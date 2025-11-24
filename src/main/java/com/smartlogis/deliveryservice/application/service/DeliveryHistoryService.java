@@ -1,5 +1,6 @@
 package com.smartlogis.deliveryservice.application.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -10,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.smartlogis.common.presentation.dto.PageRequest;
 import com.smartlogis.common.presentation.dto.PageResponse;
+import com.smartlogis.deliveryservice.application.dto.event.RouteInfo;
+import com.smartlogis.deliveryservice.domain.entity.Delivery;
 import com.smartlogis.deliveryservice.domain.entity.DeliveryHistory;
 import com.smartlogis.deliveryservice.domain.entity.DeliveryHistoryStatus;
 import com.smartlogis.deliveryservice.domain.exception.DeliveryHistoryNotFoundException;
@@ -24,6 +27,22 @@ import lombok.RequiredArgsConstructor;
 public class DeliveryHistoryService {
 
 	private final DeliveryHistoryRepository deliveryHistoryRepository;
+
+	@Transactional
+	public void createDeliveryHistories(Delivery delivery, List<RouteInfo> routes) {
+		for (RouteInfo route : routes) {
+			DeliveryHistory history = DeliveryHistory.create(
+				delivery,
+				route.getSequence(),
+				route.getDepartureHubId(),
+				route.getDestinationHubId(),
+				route.getExpectedDistanceKm(),
+				route.getExpectedDurationMin()
+			);
+
+			delivery.addDeliveryHistory(history);
+		}
+	}
 
 	@Transactional(readOnly = true)
 	public DeliveryHistoryResponse getDeliveryHistory(UUID deliveryHistoryId) {
