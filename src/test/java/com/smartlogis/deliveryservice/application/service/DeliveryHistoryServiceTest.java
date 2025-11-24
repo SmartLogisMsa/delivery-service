@@ -54,6 +54,7 @@ class DeliveryHistoryServiceTest {
 			UUID.randomUUID(),
 			UUID.randomUUID(),
 			UUID.randomUUID(),
+			UUID.randomUUID(),
 			"서울시 강남구",
 			UUID.randomUUID()
 		);
@@ -114,6 +115,7 @@ class DeliveryHistoryServiceTest {
 
 		Delivery delivery = Delivery.create(
 			UUID.randomUUID(),
+			UUID.randomUUID(),
 			departureHubId,
 			destinationHubId,
 			"서울시 강남구",
@@ -158,6 +160,7 @@ class DeliveryHistoryServiceTest {
 		// given
 		UUID deliveryHistoryId = UUID.randomUUID();
 		Delivery delivery = Delivery.create(
+			UUID.randomUUID(),
 			UUID.randomUUID(),
 			UUID.randomUUID(),
 			UUID.randomUUID(),
