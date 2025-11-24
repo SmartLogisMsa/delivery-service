@@ -7,16 +7,21 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid;
 
 import com.smartlogis.common.presentation.ApiResponse;
 import com.smartlogis.common.presentation.dto.PageRequest;
 import com.smartlogis.common.presentation.dto.PageResponse;
 import com.smartlogis.deliveryservice.application.service.DeliveryHistoryService;
 import com.smartlogis.deliveryservice.domain.entity.DeliveryHistoryStatus;
+import com.smartlogis.deliveryservice.interfaces.dto.request.DeliveryHistoryStatusUpdateRequest;
 import com.smartlogis.deliveryservice.interfaces.dto.response.DeliveryHistoryResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -75,6 +80,42 @@ public class DeliveryHistoryController {
 			deliveryId, departureHubId, destinationHubId, hubDeliveryManagerId, status, pageRequest
 		);
 		return ResponseEntity.ok(ApiResponse.successWithDataOnly(response));
+	}
+
+	@PatchMapping("/{deliveryHistoryId}/status")
+	@PreAuthorize("isAuthenticated()")
+	@Operation(
+		summary = "배송 기록 상태 업데이트",
+		description = "배송 기록의 상태를 업데이트합니다."
+	)
+	public ResponseEntity<ApiResponse<Void>> updateDeliveryHistoryStatus(
+		@PathVariable
+		@Parameter(description = "배송 기록 ID", example = "550e8400-e29b-41d4-a716-446655440000")
+		UUID deliveryHistoryId,
+		@RequestBody
+		@Valid
+		DeliveryHistoryStatusUpdateRequest request) {
+		String status = request.getStatus();
+
+		if ("HUB_MOVING".equals(status)) {
+			deliveryHistoryService.startHubDelivery(deliveryHistoryId);
+		} else if ("DESTINATION_HUB_ARRIVED".equals(status)) {
+			deliveryHistoryService.arriveAtDestinationHub(
+				deliveryHistoryId,
+				request.getActualDistanceKm(),
+				request.getActualDurationMin()
+			);
+		} else if ("COMPANY_MOVING".equals(status)) {
+			deliveryHistoryService.startCompanyDelivery(deliveryHistoryId);
+		} else if ("DESTINATION_COMPANY_ARRIVED".equals(status)) {
+			deliveryHistoryService.completeDelivery(
+				deliveryHistoryId,
+				request.getActualDistanceKm(),
+				request.getActualDurationMin()
+			);
+		}
+
+		return ResponseEntity.ok(ApiResponse.successWithDataOnly(null));
 	}
 
 	@DeleteMapping("/{deliveryHistoryId}")

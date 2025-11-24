@@ -82,6 +82,34 @@ public class DeliveryService {
 	}
 
 	@Transactional
+	public void updateDeliveryStatus(UUID deliveryId, DeliveryStatus status) {
+		Delivery delivery = deliveryRepository.findByIdAndDeletedAtIsNull(deliveryId)
+			.orElseThrow(() -> new DeliveryNotFoundException(DeliveryMessageCode.DELIVERY_NOT_FOUND));
+
+		switch (status) {
+			case HUB_MOVING:
+				delivery.startHubDelivery();
+				break;
+			case COMPANY_PENDING:
+				delivery.arriveAtDestinationHub();
+				break;
+			case COMPANY_MOVING:
+				delivery.startCompanyDelivery();
+				break;
+			case DELIVERED:
+				delivery.completeDelivery();
+				break;
+			case CANCELED:
+				delivery.cancel();
+				break;
+			default:
+				break;
+		}
+
+		deliveryRepository.save(delivery);
+	}
+
+	@Transactional
 	public void deleteDelivery(UUID deliveryId) {
 		Delivery delivery = deliveryRepository.findByIdAndDeletedAtIsNull(deliveryId)
 			.orElseThrow(() -> new DeliveryNotFoundException(DeliveryMessageCode.DELIVERY_NOT_FOUND));

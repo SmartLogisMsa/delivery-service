@@ -15,6 +15,7 @@ import com.smartlogis.deliveryservice.application.dto.event.RouteInfo;
 import com.smartlogis.deliveryservice.domain.entity.Delivery;
 import com.smartlogis.deliveryservice.domain.entity.DeliveryHistory;
 import com.smartlogis.deliveryservice.domain.entity.DeliveryHistoryStatus;
+import com.smartlogis.deliveryservice.domain.entity.DeliveryStatus;
 import com.smartlogis.deliveryservice.domain.exception.DeliveryHistoryNotFoundException;
 import com.smartlogis.deliveryservice.domain.exception.DeliveryMessageCode;
 import com.smartlogis.deliveryservice.domain.repository.DeliveryHistoryRepository;
@@ -87,5 +88,67 @@ public class DeliveryHistoryService {
 		deliveryHistory.delete();
 
 		deliveryHistoryRepository.save(deliveryHistory);
+	}
+
+	@Transactional
+	public void startHubDelivery(UUID deliveryHistoryId) {
+		DeliveryHistory deliveryHistory = deliveryHistoryRepository.findByIdAndDeletedAtIsNull(deliveryHistoryId)
+			.orElseThrow(() -> new DeliveryHistoryNotFoundException(DeliveryMessageCode.DELIVERY_HISTORY_NOT_FOUND));
+
+		deliveryHistory.startHubDelivery();
+		deliveryHistoryRepository.save(deliveryHistory);
+
+		Delivery delivery = deliveryHistory.getDelivery();
+		if (delivery.getStatus() != DeliveryStatus.HUB_MOVING) {
+			delivery.startHubDelivery();
+		}
+	}
+
+	@Transactional
+	public void arriveAtDestinationHub(UUID deliveryHistoryId, java.math.BigDecimal actualDistance, Integer actualDuration) {
+		DeliveryHistory deliveryHistory = deliveryHistoryRepository.findByIdAndDeletedAtIsNull(deliveryHistoryId)
+			.orElseThrow(() -> new DeliveryHistoryNotFoundException(DeliveryMessageCode.DELIVERY_HISTORY_NOT_FOUND));
+
+		deliveryHistory.arriveAtDestinationHub(actualDistance, actualDuration);
+		deliveryHistoryRepository.save(deliveryHistory);
+
+		Delivery delivery = deliveryHistory.getDelivery();
+		boolean allHubStagesCompleted = delivery.getActiveDeliveryHistories().stream()
+			.allMatch(history -> history.getStatus() == DeliveryHistoryStatus.DESTINATION_HUB_ARRIVED);
+
+		if (allHubStagesCompleted && delivery.getStatus() == DeliveryStatus.HUB_MOVING) {
+			delivery.arriveAtDestinationHub();
+		}
+	}
+
+	@Transactional
+	public void startCompanyDelivery(UUID deliveryHistoryId) {
+		DeliveryHistory deliveryHistory = deliveryHistoryRepository.findByIdAndDeletedAtIsNull(deliveryHistoryId)
+			.orElseThrow(() -> new DeliveryHistoryNotFoundException(DeliveryMessageCode.DELIVERY_HISTORY_NOT_FOUND));
+
+		deliveryHistory.startCompanyDelivery();
+		deliveryHistoryRepository.save(deliveryHistory);
+
+		Delivery delivery = deliveryHistory.getDelivery();
+		if (delivery.getStatus() != DeliveryStatus.COMPANY_MOVING) {
+			delivery.startCompanyDelivery();
+		}
+	}
+
+	@Transactional
+	public void completeDelivery(UUID deliveryHistoryId, java.math.BigDecimal actualDistance, Integer actualDuration) {
+		DeliveryHistory deliveryHistory = deliveryHistoryRepository.findByIdAndDeletedAtIsNull(deliveryHistoryId)
+			.orElseThrow(() -> new DeliveryHistoryNotFoundException(DeliveryMessageCode.DELIVERY_HISTORY_NOT_FOUND));
+
+		deliveryHistory.arriveAtCompany(actualDistance, actualDuration);
+		deliveryHistoryRepository.save(deliveryHistory);
+
+		Delivery delivery = deliveryHistory.getDelivery();
+		boolean allHistoriesCompleted = delivery.getActiveDeliveryHistories().stream()
+			.allMatch(history -> history.getStatus() == DeliveryHistoryStatus.DESTINATION_COMPANY_ARRIVED);
+
+		if (allHistoriesCompleted) {
+			delivery.completeDelivery();
+		}
 	}
 }
