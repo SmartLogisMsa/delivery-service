@@ -2,10 +2,12 @@ package com.smartlogis.deliveryservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
+
+import com.smartlogis.common.config.QueryDslConfig;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.smartlogis.deliveryservice", "com.smartlogis.common"})
+@Import(QueryDslConfig.class)
 public class DeliveryServiceApplication {
 
 	public static void main(String[] args) {
