@@ -12,9 +12,7 @@ import com.smartlogis.deliveryservice.domain.repository.DeliveryRepository;
 import com.smartlogis.deliveryservice.infrastructure.config.RabbitMQConfig;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DeliveryEventListener {

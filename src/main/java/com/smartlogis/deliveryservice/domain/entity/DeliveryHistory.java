@@ -118,4 +118,20 @@ public class DeliveryHistory extends AbstractEntity {
 		this.actualDistanceKm = actualDistance;
 		this.actualDurationMin = actualDuration;
 	}
+
+	public void startCompanyDelivery() {
+		if (this.status != DeliveryHistoryStatus.COMPANY_PENDING) {
+			throw new InvalidDeliveryHistoryStatusException(DeliveryMessageCode.DELIVERY_HISTORY_INVALID_STATUS);
+		}
+		this.status = DeliveryHistoryStatus.COMPANY_MOVING;
+	}
+
+	public void arriveAtCompany(BigDecimal actualDistance, Integer actualDuration) {
+		if (this.status != DeliveryHistoryStatus.COMPANY_MOVING) {
+			throw new InvalidDeliveryHistoryStatusException(DeliveryMessageCode.DELIVERY_HISTORY_INVALID_STATUS);
+		}
+		this.status = DeliveryHistoryStatus.DESTINATION_COMPANY_ARRIVED;
+		this.actualDistanceKm = actualDistance;
+		this.actualDurationMin = actualDuration;
+	}
 }
