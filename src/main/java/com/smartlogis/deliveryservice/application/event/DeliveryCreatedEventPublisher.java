@@ -77,16 +77,16 @@ public class DeliveryCreatedEventPublisher {
 		return stopoverAddresses;
 	}
 
-	private LocalDateTime calculateEstimateTime(Delivery delivery) {
+	private Double calculateEstimateTime(Delivery delivery) {
 		List<DeliveryHistory> histories = delivery.getActiveDeliveryHistories();
 		if (histories.isEmpty()) {
-			return LocalDateTime.now();
+			return 0.0;
 		}
 
 		int totalDurationMin = histories.stream()
 			.mapToInt(h -> h.getExpectedDurationMin() != null ? h.getExpectedDurationMin() : 0)
 			.sum();
 
-		return LocalDateTime.now().plusMinutes(totalDurationMin);
+		return totalDurationMin * 1.0;
 	}
 }

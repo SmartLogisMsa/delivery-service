@@ -12,6 +12,6 @@ import com.smartlogis.deliveryservice.infrastructure.client.dto.ProductInfoRespo
 @FeignClient(name = "product-service")
 public interface ProductServiceClient {
 
-	@GetMapping("/v1/products/{productId}")
+	@GetMapping("/{productId}")
 	ApiResponseWrapper<ProductInfoResponse> getProduct(@PathVariable UUID productId);
 }
