@@ -36,6 +36,7 @@ public class DeliveryEventListener {
 	private final ProductServiceClient productServiceClient;
 	private final UserServiceClient userServiceClient;
 	private final OrderServiceClient orderServiceClient;
+	private final DeliveryCreatedEventPublisher deliveryCreatedEventPublisher;
 
 	@RabbitListener(queues = RabbitMQConfig.DELIVERY_ROUTE_QUEUE)
 	@Transactional
@@ -91,6 +92,9 @@ public class DeliveryEventListener {
 
 			deliveryRepository.save(delivery);
 			logger.info("DeliveryHistory 저장 완료: orderId={}", event.getOrderId());
+
+			deliveryCreatedEventPublisher.publishDeliveryCreatedEvent(delivery, order, product, user);
+			logger.info("DeliveryCreatedEvent 발행 완료: deliveryId={}", delivery.getId());
 
 		} catch (FeignException e) {
 			logger.error("DeliveryRouteEvent 처리 중 외부 서비스 호출 오류: orderId={}", event.getOrderId(), e);
