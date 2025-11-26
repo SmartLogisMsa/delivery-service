@@ -46,6 +46,12 @@ public class DeliveryHistory extends AbstractEntity {
 	@Column(name = "destination_hub_id", nullable = false)
 	private UUID destinationHubId;
 
+	@Column(name = "departure_hub_address", length = 500)
+	private String departureHubAddress;
+
+	@Column(name = "destination_hub_address", length = 500)
+	private String destinationHubAddress;
+
 	@Column(name = "expected_distance_km", precision = 10, scale = 2, nullable = false)
 	private BigDecimal expectedDistanceKm;
 
@@ -71,6 +77,8 @@ public class DeliveryHistory extends AbstractEntity {
 		Integer sequence,
 		UUID departureHubId,
 		UUID destinationHubId,
+		String departureHubAddress,
+		String destinationHubAddress,
 		BigDecimal expectedDistance,
 		Integer expectedDuration,
 		String hubDeliveryManagerId
@@ -81,6 +89,8 @@ public class DeliveryHistory extends AbstractEntity {
 		history.sequence = sequence;
 		history.departureHubId = departureHubId;
 		history.destinationHubId = destinationHubId;
+		history.departureHubAddress = departureHubAddress;
+		history.destinationHubAddress = destinationHubAddress;
 		history.expectedDistanceKm = expectedDistance;
 		history.expectedDurationMin = expectedDuration;
 		history.hubDeliveryManagerId = hubDeliveryManagerId;
