@@ -20,6 +20,10 @@ public class RabbitMQConfig {
 	public static final String DELIVERY_EXCHANGE = "smartlogis.hubroute.order.exchange";
 	public static final String DELIVERY_ROUTE_ROUTING_KEY = "smartlogis.hubroute.order.route-created";
 
+	public static final String DELIVERY_CREATED_QUEUE = "smartlogis.delivery.created.queue";
+	public static final String DELIVERY_CREATED_EXCHANGE = "smartlogis.delivery.exchange";
+	public static final String DELIVERY_CREATED_ROUTING_KEY = "smartlogis.delivery.created";
+
 	@Bean
 	public Queue deliveryRouteQueue() {
 		return new Queue(DELIVERY_ROUTE_QUEUE, true);
@@ -36,6 +40,24 @@ public class RabbitMQConfig {
 			.bind(deliveryRouteQueue())
 			.to(deliveryExchange())
 			.with(DELIVERY_ROUTE_ROUTING_KEY);
+	}
+
+	@Bean
+	public Queue deliveryCreatedQueue() {
+		return new Queue(DELIVERY_CREATED_QUEUE, true);
+	}
+
+	@Bean
+	public TopicExchange deliveryCreatedExchange() {
+		return new TopicExchange(DELIVERY_CREATED_EXCHANGE, true, false);
+	}
+
+	@Bean
+	public Binding deliveryCreatedBinding() {
+		return BindingBuilder
+			.bind(deliveryCreatedQueue())
+			.to(deliveryCreatedExchange())
+			.with(DELIVERY_CREATED_ROUTING_KEY);
 	}
 
 	@Bean

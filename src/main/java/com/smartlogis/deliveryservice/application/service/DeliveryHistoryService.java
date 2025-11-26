@@ -37,6 +37,8 @@ public class DeliveryHistoryService {
 				route.getSequence(),
 				route.getDepartureHubId(),
 				route.getDestinationHubId(),
+				route.getDepartureHubAddress(),
+				route.getDestinationHubAddress(),
 				route.getExpectedDistanceKm(),
 				route.getExpectedDurationMin(),
 				delivery.getHubDeliveryManagerSlackId()
