@@ -1,5 +1,7 @@
 package com.smartlogis.deliveryservice.application.event;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DeliveryEventListener {
 
+	private static final Logger logger = LoggerFactory.getLogger(DeliveryEventListener.class);
+
 	private final DeliveryService deliveryService;
 	private final DeliveryHistoryService deliveryHistoryService;
 	private final DeliveryRepository deliveryRepository;
@@ -30,27 +34,42 @@ public class DeliveryEventListener {
 	@RabbitListener(queues = RabbitMQConfig.DELIVERY_ROUTE_QUEUE)
 	@Transactional
 	public void handleDeliveryRouteEvent(DeliveryRouteEvent event) {
-		ProductInfoResponse product = productServiceClient.getProduct(event.getProductId()).getData();
+		logger.info("DeliveryRouteEvent 수신: orderId={}, productId={}", event.getOrderId(), event.getProductId());
 
-		UserInfoResponse user = userServiceClient.getUser(event.getReceiptUserId()).getData();
+		try {
+			logger.info("Product Service 호출 시작: productId={}", event.getProductId());
+			ProductInfoResponse product = productServiceClient.getProduct(event.getProductId()).getData();
+			logger.info("Product Service 호출 성공: productName={}, quantity={}", product.getProductName(), product.getQuantity());
 
-		Delivery delivery = deliveryService.createDelivery(
-			event.getOrderId(),
-			event.getProductId(),
-			product.getProductName(),
-			product.getQuantity(),
-			event.getDepartureHubId(),
-			event.getDepartureHubAddress(),
-			event.getDestinationHubId(),
-			event.getDestinationHubAddress(),
-			event.getReceiptUserId(),
-			user.getUsername(),
-			user.getEmail(),
-			event.getAddress()
-		);
+			logger.info("User Service 호출 시작: userId={}", event.getReceiptUserId());
+			UserInfoResponse user = userServiceClient.getUser(event.getReceiptUserId()).getData();
+			logger.info("User Service 호출 성공: username={}, email={}", user.getUsername(), user.getEmail());
 
-		deliveryHistoryService.createDeliveryHistories(delivery, event.getRoutes());
+			Delivery delivery = deliveryService.createDelivery(
+				event.getOrderId(),
+				event.getProductId(),
+				product.getProductName(),
+				product.getQuantity(),
+				event.getDepartureHubId(),
+				event.getDepartureHubAddress(),
+				event.getDestinationHubId(),
+				event.getDestinationHubAddress(),
+				event.getReceiptUserId(),
+				user.getUsername(),
+				user.getEmail(),
+				event.getAddress()
+			);
 
-		deliveryRepository.save(delivery);
+			logger.info("Delivery 생성 성공: deliveryId={}", delivery.getId());
+
+			deliveryHistoryService.createDeliveryHistories(delivery, event.getRoutes());
+
+			deliveryRepository.save(delivery);
+			logger.info("Delivery 저장 완료: orderId={}", event.getOrderId());
+
+		} catch (Exception e) {
+			logger.error("DeliveryRouteEvent 처리 중 오류 발생: orderId={}", event.getOrderId(), e);
+			throw e;
+		}
 	}
 }
