@@ -80,10 +80,13 @@ public class DeliveryEventListener {
 
 			logger.info("Delivery 생성 성공: deliveryId={}", delivery.getId());
 
+			deliveryRepository.save(delivery);
+			logger.info("Delivery 저장 완료: deliveryId={}", delivery.getId());
+
 			deliveryHistoryService.createDeliveryHistories(delivery, event.getRoutes());
 
 			deliveryRepository.save(delivery);
-			logger.info("Delivery 저장 완료: orderId={}", event.getOrderId());
+			logger.info("DeliveryHistory 저장 완료: orderId={}", event.getOrderId());
 
 		} catch (FeignException e) {
 			logger.error("DeliveryRouteEvent 처리 중 외부 서비스 호출 오류: orderId={}", event.getOrderId(), e);
