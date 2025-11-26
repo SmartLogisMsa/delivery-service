@@ -52,10 +52,10 @@ public class DeliveryHistory extends AbstractEntity {
 	@Column(name = "expected_duration_min", nullable = false)
 	private Integer expectedDurationMin;
 
-	@Column(name = "actual_distance_km", precision = 10, scale = 2, nullable = false)
+	@Column(name = "actual_distance_km", precision = 10, scale = 2, nullable = true)
 	private BigDecimal actualDistanceKm;
 
-	@Column(name = "actual_duration_min", nullable = false)
+	@Column(name = "actual_duration_min", nullable = true)
 	private Integer actualDurationMin;
 
 	@Enumerated(EnumType.STRING)
