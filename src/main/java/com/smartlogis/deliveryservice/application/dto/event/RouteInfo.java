@@ -15,7 +15,9 @@ import lombok.NoArgsConstructor;
 public class RouteInfo {
 	private Integer sequence;
 	private UUID departureHubId;
+	private String departureHubAddress;
 	private UUID destinationHubId;
+	private String destinationHubAddress;
 	private BigDecimal expectedDistanceKm;
 	private Integer expectedDurationMin;
 }

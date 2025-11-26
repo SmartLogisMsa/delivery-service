@@ -29,18 +29,30 @@ public class DeliveryService {
 	public Delivery createDelivery(
 		UUID orderId,
 		UUID productId,
+		String productName,
+		Integer productQuantity,
 		UUID departureHubId,
+		String departureHubAddress,
 		UUID destinationHubId,
-		String address,
-		UUID receiptUserId
+		String destinationHubAddress,
+		UUID receiptUserId,
+		String receiptUserName,
+		String receiptUserEmail,
+		String address
 	) {
 		Delivery delivery = Delivery.create(
 			orderId,
 			productId,
+			productName,
+			productQuantity,
 			departureHubId,
+			departureHubAddress,
 			destinationHubId,
-			address,
-			receiptUserId
+			destinationHubAddress,
+			receiptUserId,
+			receiptUserName,
+			receiptUserEmail,
+			address
 		);
 
 		return deliveryRepository.save(delivery);

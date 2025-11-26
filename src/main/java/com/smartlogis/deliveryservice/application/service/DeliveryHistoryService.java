@@ -38,7 +38,8 @@ public class DeliveryHistoryService {
 				route.getDepartureHubId(),
 				route.getDestinationHubId(),
 				route.getExpectedDistanceKm(),
-				route.getExpectedDurationMin()
+				route.getExpectedDurationMin(),
+				delivery.getHubDeliveryManagerSlackId()
 			);
 
 			delivery.addDeliveryHistory(history);
@@ -58,7 +59,7 @@ public class DeliveryHistoryService {
 		UUID deliveryId,
 		UUID departureHubId,
 		UUID destinationHubId,
-		UUID hubDeliveryManagerId,
+		String hubDeliveryManagerId,
 		DeliveryHistoryStatus status,
 		PageRequest pageRequest
 	) {

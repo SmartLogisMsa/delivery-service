@@ -16,7 +16,9 @@ public class DeliveryRouteEvent {
 	private UUID orderId;
 	private UUID productId;
 	private UUID departureHubId;
+	private String departureHubAddress;
 	private UUID destinationHubId;
+	private String destinationHubAddress;
 	private String address;
 	private UUID receiptUserId;
 	private List<RouteInfo> routes;

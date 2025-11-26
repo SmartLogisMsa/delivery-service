@@ -30,7 +30,7 @@ public class DeliveryHistoryRepositoryImpl implements DeliveryHistoryRepositoryC
 		UUID deliveryId,
 		UUID departureHubId,
 		UUID destinationHubId,
-		UUID hubDeliveryManagerId,
+		String hubDeliveryManagerId,
 		DeliveryHistoryStatus status,
 		Pageable pageable
 	) {
@@ -88,7 +88,7 @@ public class DeliveryHistoryRepositoryImpl implements DeliveryHistoryRepositoryC
 			QDeliveryHistory.deliveryHistory.destinationHubId.eq(destinationHubId) : null;
 	}
 
-	private BooleanExpression hubDeliveryManagerIdEq(UUID hubDeliveryManagerId) {
+	private BooleanExpression hubDeliveryManagerIdEq(String hubDeliveryManagerId) {
 		return hubDeliveryManagerId != null ?
 			QDeliveryHistory.deliveryHistory.hubDeliveryManagerId.eq(hubDeliveryManagerId) : null;
 	}

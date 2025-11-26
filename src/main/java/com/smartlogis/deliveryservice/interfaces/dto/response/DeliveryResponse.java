@@ -20,12 +20,24 @@ import lombok.NoArgsConstructor;
 public class DeliveryResponse {
 	private UUID id;
 	private UUID orderId;
+	private UUID productId;
+	private String productName;
+	private Integer productQuantity;
 	private DeliveryStatus status;
 	private UUID departureHubId;
+	private String departureHubAddress;
 	private UUID destinationHubId;
-	private String address;
+	private String destinationHubAddress;
+	private String hubDeliveryManagerName;
+	private String hubDeliveryManagerEmail;
+	private String hubDeliveryManagerSlackId;
+	private String companyDeliveryManagerName;
+	private String companyDeliveryManagerEmail;
+	private String companyDeliveryManagerSlackId;
 	private UUID receiptUserId;
-	private UUID companyDeliveryManagerId;
+	private String receiptUserName;
+	private String receiptUserEmail;
+	private String address;
 	private List<DeliveryHistoryResponse> deliveryHistories;
 	private LocalDateTime createdAt;
 	private String createdBy;
@@ -36,12 +48,24 @@ public class DeliveryResponse {
 		return DeliveryResponse.builder()
 			.id(delivery.getId())
 			.orderId(delivery.getOrderId())
+			.productId(delivery.getProductId())
+			.productName(delivery.getProductName())
+			.productQuantity(delivery.getProductQuantity())
 			.status(delivery.getStatus())
 			.departureHubId(delivery.getDepartureHubId())
+			.departureHubAddress(delivery.getDepartureHubAddress())
 			.destinationHubId(delivery.getDestinationHubId())
-			.address(delivery.getAddress())
+			.destinationHubAddress(delivery.getDestinationHubAddress())
+			.hubDeliveryManagerName(delivery.getHubDeliveryManagerName())
+			.hubDeliveryManagerEmail(delivery.getHubDeliveryManagerEmail())
+			.hubDeliveryManagerSlackId(delivery.getHubDeliveryManagerSlackId())
+			.companyDeliveryManagerName(delivery.getCompanyDeliveryManagerName())
+			.companyDeliveryManagerEmail(delivery.getCompanyDeliveryManagerEmail())
+			.companyDeliveryManagerSlackId(delivery.getCompanyDeliveryManagerSlackId())
 			.receiptUserId(delivery.getReceiptUserId())
-			.companyDeliveryManagerId(delivery.getCompanyDeliveryManagerId())
+			.receiptUserName(delivery.getReceiptUserName())
+			.receiptUserEmail(delivery.getReceiptUserEmail())
+			.address(delivery.getAddress())
 			.deliveryHistories(
 				delivery.getActiveDeliveryHistories().stream()
 					.map(DeliveryHistoryResponse::from)

@@ -8,11 +8,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.smartlogis.common.utils.QuerydslSortUtils;
 import com.smartlogis.deliveryservice.domain.entity.Delivery;
 import com.smartlogis.deliveryservice.domain.entity.DeliveryStatus;
 import com.smartlogis.deliveryservice.domain.entity.QDelivery;
@@ -36,12 +34,6 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
 	) {
 		QDelivery delivery = QDelivery.delivery;
 
-		OrderSpecifier<?>[] orderSpecifiers = QuerydslSortUtils.toOrderSpecifiers(
-			Delivery.class,
-			"createdAt",
-			pageable.getSort()
-		);
-
 		JPAQuery<Delivery> query = queryFactory
 			.selectFrom(delivery)
 			.where(
@@ -49,10 +41,9 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
 				statusEq(status),
 				departureHubIdEq(departureHubId),
 				destinationHubIdEq(destinationHubId),
-				companyDeliveryManagerIdEq(companyDeliveryManagerId),
 				delivery.deletedAt.isNull()
 			)
-			.orderBy(orderSpecifiers);
+			.orderBy(delivery.createdAt.desc());
 
 		List<Delivery> content = query
 			.offset(pageable.getOffset())
@@ -67,7 +58,6 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
 				statusEq(status),
 				departureHubIdEq(departureHubId),
 				destinationHubIdEq(destinationHubId),
-				companyDeliveryManagerIdEq(companyDeliveryManagerId),
 				delivery.deletedAt.isNull()
 			)
 			.fetchOne();
@@ -89,10 +79,5 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
 
 	private BooleanExpression destinationHubIdEq(UUID destinationHubId) {
 		return destinationHubId != null ? QDelivery.delivery.destinationHubId.eq(destinationHubId) : null;
-	}
-
-	private BooleanExpression companyDeliveryManagerIdEq(UUID companyDeliveryManagerId) {
-		return companyDeliveryManagerId != null ?
-			QDelivery.delivery.companyDeliveryManagerId.eq(companyDeliveryManagerId) : null;
 	}
 }

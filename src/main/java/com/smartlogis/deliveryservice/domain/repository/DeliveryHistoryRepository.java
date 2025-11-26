@@ -18,7 +18,7 @@ public interface DeliveryHistoryRepository extends JpaRepository<DeliveryHistory
 
 	List<DeliveryHistory> findByStatusAndDeletedAtIsNull(DeliveryHistoryStatus status);
 
-	List<DeliveryHistory> findByHubDeliveryManagerIdAndDeletedAtIsNull(UUID hubDeliveryManagerId);
+	List<DeliveryHistory> findByHubDeliveryManagerIdAndDeletedAtIsNull(String hubDeliveryManagerId);
 
 	long countByDeliveryIdAndDeletedAtIsNull(UUID deliveryId);
 }

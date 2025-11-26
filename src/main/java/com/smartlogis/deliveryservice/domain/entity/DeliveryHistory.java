@@ -52,18 +52,18 @@ public class DeliveryHistory extends AbstractEntity {
 	@Column(name = "expected_duration_min", nullable = false)
 	private Integer expectedDurationMin;
 
-	@Column(name = "actual_distance_km", precision = 10, scale = 2, nullable = false)
+	@Column(name = "actual_distance_km", precision = 10, scale = 2, nullable = true)
 	private BigDecimal actualDistanceKm;
 
-	@Column(name = "actual_duration_min", nullable = false)
+	@Column(name = "actual_duration_min", nullable = true)
 	private Integer actualDurationMin;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	private DeliveryHistoryStatus status;
 
-	@Column(name = "hub_delivery_manager_id")
-	private UUID hubDeliveryManagerId;
+	@Column(name = "hub_delivery_manager_id", length = 100)
+	private String hubDeliveryManagerId;
 
 	@Builder
 	public static DeliveryHistory create(
@@ -72,7 +72,8 @@ public class DeliveryHistory extends AbstractEntity {
 		UUID departureHubId,
 		UUID destinationHubId,
 		BigDecimal expectedDistance,
-		Integer expectedDuration
+		Integer expectedDuration,
+		String hubDeliveryManagerId
 	) {
 		DeliveryHistory history = new DeliveryHistory();
 		history.id = UUID.randomUUID();
@@ -82,6 +83,7 @@ public class DeliveryHistory extends AbstractEntity {
 		history.destinationHubId = destinationHubId;
 		history.expectedDistanceKm = expectedDistance;
 		history.expectedDurationMin = expectedDuration;
+		history.hubDeliveryManagerId = hubDeliveryManagerId;
 		history.status = DeliveryHistoryStatus.HUB_PENDING;
 		return history;
 	}
@@ -90,7 +92,7 @@ public class DeliveryHistory extends AbstractEntity {
 		this.delivery = delivery;
 	}
 
-	public void assignHubDeliveryManager(UUID hubDeliveryManagerId) {
+	public void assignHubDeliveryManager(String hubDeliveryManagerId) {
 		this.hubDeliveryManagerId = hubDeliveryManagerId;
 	}
 
