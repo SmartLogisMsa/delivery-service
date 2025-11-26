@@ -34,7 +34,7 @@ public class DeliveryCreatedEventPublisher {
 			.orderer(DeliveryCreatedEvent.Orderer.builder()
 				.name(user.getUsername())
 				.email(user.getEmail())
-				.slackId(null)
+				.slackId(user.getSlackId())
 				.build())
 			.products(List.of(DeliveryCreatedEvent.Product.builder()
 				.id(delivery.getProductId())
