@@ -11,12 +11,16 @@ import com.smartlogis.deliveryservice.application.service.DeliveryHistoryService
 import com.smartlogis.deliveryservice.application.service.DeliveryService;
 import com.smartlogis.deliveryservice.domain.entity.Delivery;
 import com.smartlogis.deliveryservice.domain.repository.DeliveryRepository;
+import com.smartlogis.deliveryservice.domain.exception.DeliveryMessageCode;
+import com.smartlogis.deliveryservice.domain.exception.DeliveryNotFoundException;
 import com.smartlogis.deliveryservice.infrastructure.client.OrderServiceClient;
 import com.smartlogis.deliveryservice.infrastructure.client.ProductServiceClient;
 import com.smartlogis.deliveryservice.infrastructure.client.UserServiceClient;
 import com.smartlogis.deliveryservice.infrastructure.client.dto.ProductInfoResponse;
 import com.smartlogis.deliveryservice.infrastructure.client.dto.UserInfoResponse;
 import com.smartlogis.deliveryservice.infrastructure.config.RabbitMQConfig;
+
+import feign.FeignException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -52,7 +56,7 @@ public class DeliveryEventListener {
 				.filter(item -> item.getProductId().equals(event.getProductId()))
 				.map(item -> item.getQuantity())
 				.findFirst()
-				.orElseThrow(() -> new RuntimeException("주문에서 상품을 찾을 수 없습니다: productId=" + event.getProductId()));
+				.orElseThrow(() -> new DeliveryNotFoundException(DeliveryMessageCode.DELIVERY_ORDER_ITEM_NOT_FOUND, event.getProductId()));
 			logger.info("주문에서 상품 수량 조회 성공: quantity={}", productQuantity);
 
 			logger.info("User Service 호출 시작: userId={}", event.getReceiptUserId());
@@ -81,9 +85,15 @@ public class DeliveryEventListener {
 			deliveryRepository.save(delivery);
 			logger.info("Delivery 저장 완료: orderId={}", event.getOrderId());
 
-		} catch (Exception e) {
-			logger.error("DeliveryRouteEvent 처리 중 오류 발생: orderId={}", event.getOrderId(), e);
+		} catch (FeignException e) {
+			logger.error("DeliveryRouteEvent 처리 중 외부 서비스 호출 오류: orderId={}", event.getOrderId(), e);
+			throw new DeliveryNotFoundException(DeliveryMessageCode.DELIVERY_EXTERNAL_SERVICE_ERROR, e.getMessage());
+		} catch (DeliveryNotFoundException e) {
+			logger.error("DeliveryRouteEvent 처리 중 배송 관련 오류: orderId={}", event.getOrderId(), e);
 			throw e;
+		} catch (Exception e) {
+			logger.error("DeliveryRouteEvent 처리 중 예상 외 오류: orderId={}", event.getOrderId(), e);
+			throw new DeliveryNotFoundException(DeliveryMessageCode.DELIVERY_EXTERNAL_SERVICE_ERROR, e.getMessage());
 		}
 	}
 }
