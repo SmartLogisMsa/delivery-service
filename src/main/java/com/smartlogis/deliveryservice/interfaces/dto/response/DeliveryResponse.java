@@ -25,8 +25,9 @@ public class DeliveryResponse {
 	private Integer productQuantity;
 	private DeliveryStatus status;
 	private UUID departureHubId;
-	private UUID stopoverHubId;
+	private String departureHubAddress;
 	private UUID destinationHubId;
+	private String destinationHubAddress;
 	private String hubDeliveryManagerName;
 	private String hubDeliveryManagerEmail;
 	private String hubDeliveryManagerSlackId;
@@ -52,8 +53,9 @@ public class DeliveryResponse {
 			.productQuantity(delivery.getProductQuantity())
 			.status(delivery.getStatus())
 			.departureHubId(delivery.getDepartureHubId())
-			.stopoverHubId(delivery.getStopoverHubId())
+			.departureHubAddress(delivery.getDepartureHubAddress())
 			.destinationHubId(delivery.getDestinationHubId())
+			.destinationHubAddress(delivery.getDestinationHubAddress())
 			.hubDeliveryManagerName(delivery.getHubDeliveryManagerName())
 			.hubDeliveryManagerEmail(delivery.getHubDeliveryManagerEmail())
 			.hubDeliveryManagerSlackId(delivery.getHubDeliveryManagerSlackId())
