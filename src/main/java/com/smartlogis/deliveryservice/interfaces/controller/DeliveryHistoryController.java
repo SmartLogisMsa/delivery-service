@@ -30,7 +30,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/v1/delivery-histories")
+@RequestMapping("/histories")
 @RequiredArgsConstructor
 @Tag(name = "Delivery History API", description = "배송 기록 관련 API")
 public class DeliveryHistoryController {

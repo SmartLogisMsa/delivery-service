@@ -30,10 +30,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/v1/deliveries")
 @RequiredArgsConstructor
 @Tag(name = "Delivery API", description = "배송 관련 API")
 public class DeliveryController {
+
 
 	private final DeliveryService deliveryService;
 
