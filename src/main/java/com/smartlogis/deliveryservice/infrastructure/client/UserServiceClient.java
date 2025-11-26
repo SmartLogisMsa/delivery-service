@@ -12,6 +12,6 @@ import com.smartlogis.deliveryservice.infrastructure.client.dto.UserInfoResponse
 @FeignClient(name = "user-service")
 public interface UserServiceClient {
 
-	@GetMapping("/v1/users/{userId}")
+	@GetMapping("/{userId}")
 	ApiResponseWrapper<UserInfoResponse> getUser(@PathVariable UUID userId);
 }
