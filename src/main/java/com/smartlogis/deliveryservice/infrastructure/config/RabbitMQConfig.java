@@ -16,9 +16,9 @@ import org.springframework.context.annotation.Configuration;
 @EnableRabbit
 public class RabbitMQConfig {
 
-	public static final String DELIVERY_ROUTE_QUEUE = "delivery.route.queue";
-	public static final String DELIVERY_EXCHANGE = "delivery.exchange";
-	public static final String DELIVERY_ROUTE_ROUTING_KEY = "delivery.route.created";
+	public static final String DELIVERY_ROUTE_QUEUE = "smartlogis.hubroute.order.route-created.queue";
+	public static final String DELIVERY_EXCHANGE = "smartlogis.hubroute.order.exchange";
+	public static final String DELIVERY_ROUTE_ROUTING_KEY = "smartlogis.hubroute.order.route-created";
 
 	@Bean
 	public Queue deliveryRouteQueue() {
@@ -27,7 +27,7 @@ public class RabbitMQConfig {
 
 	@Bean
 	public TopicExchange deliveryExchange() {
-		return new TopicExchange(DELIVERY_EXCHANGE);
+		return new TopicExchange(DELIVERY_EXCHANGE, true, false);
 	}
 
 	@Bean
