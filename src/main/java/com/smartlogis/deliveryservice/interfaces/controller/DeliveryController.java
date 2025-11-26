@@ -58,6 +58,9 @@ public class DeliveryController {
 	)
 	public ResponseEntity<ApiResponse<PageResponse<DeliveryResponse>>> searchDeliveries(
 		@RequestParam(required = false)
+		@Parameter(description = "배송 ID", example = "550e8400-e29b-41d4-a716-446655440000")
+		UUID deliveryId,
+		@RequestParam(required = false)
 		@Parameter(description = "주문 ID", example = "550e8400-e29b-41d4-a716-446655440000")
 		UUID orderId,
 		@RequestParam(required = false)
@@ -76,7 +79,7 @@ public class DeliveryController {
 		@Parameter(description = "페이지네이션 요청")
 		PageRequest pageRequest) {
 		PageResponse<DeliveryResponse> response = deliveryService.searchDeliveries(
-			orderId, status, departureHubId, destinationHubId, companyDeliveryManagerId, pageRequest
+			deliveryId, orderId, status, departureHubId, destinationHubId, companyDeliveryManagerId, pageRequest
 		);
 		return ResponseEntity.ok(ApiResponse.successWithDataOnly(response));
 	}

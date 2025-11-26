@@ -68,6 +68,7 @@ public class DeliveryService {
 
 	@Transactional(readOnly = true)
 	public PageResponse<DeliveryResponse> searchDeliveries(
+		UUID deliveryId,
 		UUID orderId,
 		DeliveryStatus status,
 		UUID departureHubId,
@@ -87,7 +88,7 @@ public class DeliveryService {
 		);
 
 		Page<Delivery> deliveries = deliveryRepository.searchDeliveries(
-			orderId, status, departureHubId, destinationHubId, companyDeliveryManagerId, pageable
+			deliveryId, orderId, status, departureHubId, destinationHubId, companyDeliveryManagerId, pageable
 		);
 
 		return PageResponse.from(deliveries.map(DeliveryResponse::from));

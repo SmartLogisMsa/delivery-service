@@ -10,6 +10,7 @@ import com.smartlogis.deliveryservice.domain.entity.DeliveryStatus;
 
 public interface DeliveryRepositoryCustom {
 	Page<Delivery> searchDeliveries(
+		UUID deliveryId,
 		UUID orderId,
 		DeliveryStatus status,
 		UUID departureHubId,

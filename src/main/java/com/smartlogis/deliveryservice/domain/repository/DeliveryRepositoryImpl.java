@@ -25,6 +25,7 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
 
 	@Override
 	public Page<Delivery> searchDeliveries(
+		UUID deliveryId,
 		UUID orderId,
 		DeliveryStatus status,
 		UUID departureHubId,
@@ -37,10 +38,12 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
 		JPAQuery<Delivery> query = queryFactory
 			.selectFrom(delivery)
 			.where(
+				deliveryIdEq(deliveryId),
 				orderIdEq(orderId),
 				statusEq(status),
 				departureHubIdEq(departureHubId),
 				destinationHubIdEq(destinationHubId),
+				companyDeliveryManagerIdEq(companyDeliveryManagerId),
 				delivery.deletedAt.isNull()
 			)
 			.orderBy(delivery.createdAt.desc());
@@ -54,15 +57,21 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
 			.select(delivery.count())
 			.from(delivery)
 			.where(
+				deliveryIdEq(deliveryId),
 				orderIdEq(orderId),
 				statusEq(status),
 				departureHubIdEq(departureHubId),
 				destinationHubIdEq(destinationHubId),
+				companyDeliveryManagerIdEq(companyDeliveryManagerId),
 				delivery.deletedAt.isNull()
 			)
 			.fetchOne();
 
 		return new PageImpl<>(content, pageable, total != null ? total : 0L);
+	}
+
+	private BooleanExpression deliveryIdEq(UUID deliveryId) {
+		return deliveryId != null ? QDelivery.delivery.id.eq(deliveryId) : null;
 	}
 
 	private BooleanExpression orderIdEq(UUID orderId) {
@@ -79,5 +88,9 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
 
 	private BooleanExpression destinationHubIdEq(UUID destinationHubId) {
 		return destinationHubId != null ? QDelivery.delivery.destinationHubId.eq(destinationHubId) : null;
+	}
+
+	private BooleanExpression companyDeliveryManagerIdEq(UUID companyDeliveryManagerId) {
+		return companyDeliveryManagerId != null ? QDelivery.delivery.companyDeliveryManagerSlackId.eq(companyDeliveryManagerId.toString()) : null;
 	}
 }
