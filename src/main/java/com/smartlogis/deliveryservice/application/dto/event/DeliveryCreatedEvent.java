@@ -23,7 +23,7 @@ public class DeliveryCreatedEvent {
 	private List<String> stopoverHub;
 	private String arrivalHub;
 	private String address;
-	private LocalDateTime estimateTime;
+	private Double estimateTime;
 	private Staff staff;
 
 	@Data
