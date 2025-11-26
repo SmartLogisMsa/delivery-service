@@ -80,6 +80,10 @@ public class DeliveryEventListener {
 
 			logger.info("Delivery 생성 성공: deliveryId={}", delivery.getId());
 
+			delivery.assignHubDeliveryManager("이서현", "hyeon48615@gmail.com", "U09LA4X869K");
+
+			delivery.assignCompanyDeliveryManager("이채은", "chaen0822@gmail.com", "U09NLL0858T");
+
 			deliveryRepository.save(delivery);
 			logger.info("Delivery 저장 완료: deliveryId={}", delivery.getId());
 
