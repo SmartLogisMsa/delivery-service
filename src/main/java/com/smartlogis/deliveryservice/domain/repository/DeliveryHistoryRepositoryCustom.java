@@ -13,7 +13,7 @@ public interface DeliveryHistoryRepositoryCustom {
 		UUID deliveryId,
 		UUID departureHubId,
 		UUID destinationHubId,
-		UUID hubDeliveryManagerId,
+		String hubDeliveryManagerId,
 		DeliveryHistoryStatus status,
 		Pageable pageable
 	);

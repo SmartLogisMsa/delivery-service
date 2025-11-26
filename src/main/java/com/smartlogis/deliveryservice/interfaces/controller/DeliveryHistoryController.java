@@ -68,8 +68,8 @@ public class DeliveryHistoryController {
 		@Parameter(description = "도착 허브 ID", example = "550e8400-e29b-41d4-a716-446655440000")
 		UUID destinationHubId,
 		@RequestParam(required = false)
-		@Parameter(description = "허브 배송 담당자 ID", example = "550e8400-e29b-41d4-a716-446655440000")
-		UUID hubDeliveryManagerId,
+		@Parameter(description = "허브 배송 담당자 Slack ID", example = "U09LA4X869K")
+		String hubDeliveryManagerId,
 		@RequestParam(required = false)
 		@Parameter(description = "배송 기록 상태", example = "HUB_PENDING")
 		DeliveryHistoryStatus status,

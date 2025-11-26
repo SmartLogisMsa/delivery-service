@@ -26,7 +26,7 @@ public class DeliveryHistoryResponse {
 	private BigDecimal actualDistanceKm;
 	private Integer actualDurationMin;
 	private DeliveryHistoryStatus status;
-	private UUID hubDeliveryManagerId;
+	private String hubDeliveryManagerId;
 	private LocalDateTime createdAt;
 	private String createdBy;
 	private LocalDateTime updatedAt;
