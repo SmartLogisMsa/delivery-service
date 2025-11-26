@@ -49,7 +49,6 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
 				statusEq(status),
 				departureHubIdEq(departureHubId),
 				destinationHubIdEq(destinationHubId),
-				companyDeliveryManagerIdEq(companyDeliveryManagerId),
 				delivery.deletedAt.isNull()
 			)
 			.orderBy(orderSpecifiers);
@@ -67,7 +66,6 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
 				statusEq(status),
 				departureHubIdEq(departureHubId),
 				destinationHubIdEq(destinationHubId),
-				companyDeliveryManagerIdEq(companyDeliveryManagerId),
 				delivery.deletedAt.isNull()
 			)
 			.fetchOne();
@@ -89,10 +87,5 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
 
 	private BooleanExpression destinationHubIdEq(UUID destinationHubId) {
 		return destinationHubId != null ? QDelivery.delivery.destinationHubId.eq(destinationHubId) : null;
-	}
-
-	private BooleanExpression companyDeliveryManagerIdEq(UUID companyDeliveryManagerId) {
-		return companyDeliveryManagerId != null ?
-			QDelivery.delivery.companyDeliveryManagerId.eq(companyDeliveryManagerId) : null;
 	}
 }
