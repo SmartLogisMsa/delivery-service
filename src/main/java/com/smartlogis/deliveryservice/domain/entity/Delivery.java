@@ -25,7 +25,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "p_deliveries")
+@Table(name = "p_delivery")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -41,6 +41,12 @@ public class Delivery extends AbstractEntity {
 	@Column(name = "product_id", nullable = false)
 	private UUID productId;
 
+	@Column(name = "product_name", nullable = false, length = 255)
+	private String productName;
+
+	@Column(name = "product_quantity", nullable = false)
+	private Integer productQuantity;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	private DeliveryStatus status;
@@ -48,17 +54,41 @@ public class Delivery extends AbstractEntity {
 	@Column(name = "departure_hub_id", nullable = false)
 	private UUID departureHubId;
 
+	@Column(name = "stopover_hub_id")
+	private UUID stopoverHubId;
+
 	@Column(name = "destination_hub_id", nullable = false)
 	private UUID destinationHubId;
 
-	@Column(name = "address", nullable = false)
-	private String address;
+	@Column(name = "hub_delivery_manager_name", length = 100)
+	private String hubDeliveryManagerName;
+
+	@Column(name = "hub_delivery_manager_email", length = 100)
+	private String hubDeliveryManagerEmail;
+
+	@Column(name = "hub_delivery_manager_slack_id", length = 100)
+	private String hubDeliveryManagerSlackId;
+
+	@Column(name = "company_delivery_manager_name", length = 100)
+	private String companyDeliveryManagerName;
+
+	@Column(name = "company_delivery_manager_email", length = 100)
+	private String companyDeliveryManagerEmail;
+
+	@Column(name = "company_delivery_manager_slack_id", length = 100)
+	private String companyDeliveryManagerSlackId;
 
 	@Column(name = "receipt_user_id", nullable = false)
 	private UUID receiptUserId;
 
-	@Column(name = "company_delivery_manager_id")
-	private UUID companyDeliveryManagerId;
+	@Column(name = "receipt_user_name", nullable = false, length = 100)
+	private String receiptUserName;
+
+	@Column(name = "receipt_user_email", nullable = false, length = 100)
+	private String receiptUserEmail;
+
+	@Column(name = "address", nullable = false, length = 255)
+	private String address;
 
 	@OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<DeliveryHistory> deliveryHistories = new ArrayList<>();
@@ -67,20 +97,30 @@ public class Delivery extends AbstractEntity {
 	public static Delivery create(
 		UUID orderId,
 		UUID productId,
+		String productName,
+		Integer productQuantity,
 		UUID departureHubId,
+		UUID stopoverHubId,
 		UUID destinationHubId,
-		String address,
-		UUID receiptUserId
+		UUID receiptUserId,
+		String receiptUserName,
+		String receiptUserEmail,
+		String address
 	) {
 		Delivery delivery = new Delivery();
 		delivery.id = UUID.randomUUID();
 		delivery.orderId = orderId;
 		delivery.productId = productId;
+		delivery.productName = productName;
+		delivery.productQuantity = productQuantity;
 		delivery.status = DeliveryStatus.HUB_PENDING;
 		delivery.departureHubId = departureHubId;
+		delivery.stopoverHubId = stopoverHubId;
 		delivery.destinationHubId = destinationHubId;
-		delivery.address = address;
 		delivery.receiptUserId = receiptUserId;
+		delivery.receiptUserName = receiptUserName;
+		delivery.receiptUserEmail = receiptUserEmail;
+		delivery.address = address;
 		delivery.deliveryHistories = new ArrayList<>();
 		return delivery;
 	}
@@ -93,8 +133,16 @@ public class Delivery extends AbstractEntity {
 		this.status = status;
 	}
 
-	public void assignCompanyDeliveryManager(UUID companyDeliveryManagerId) {
-		this.companyDeliveryManagerId = companyDeliveryManagerId;
+	public void assignHubDeliveryManager(String name, String email, String slackId) {
+		this.hubDeliveryManagerName = name;
+		this.hubDeliveryManagerEmail = email;
+		this.hubDeliveryManagerSlackId = slackId;
+	}
+
+	public void assignCompanyDeliveryManager(String name, String email, String slackId) {
+		this.companyDeliveryManagerName = name;
+		this.companyDeliveryManagerEmail = email;
+		this.companyDeliveryManagerSlackId = slackId;
 	}
 
 	public void startHubDelivery() {
