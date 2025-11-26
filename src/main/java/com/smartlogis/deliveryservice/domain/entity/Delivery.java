@@ -54,11 +54,14 @@ public class Delivery extends AbstractEntity {
 	@Column(name = "departure_hub_id", nullable = false)
 	private UUID departureHubId;
 
-	@Column(name = "stopover_hub_id")
-	private UUID stopoverHubId;
+	@Column(name = "departure_hub_address", nullable = false, length = 255)
+	private String departureHubAddress;
 
 	@Column(name = "destination_hub_id", nullable = false)
 	private UUID destinationHubId;
+
+	@Column(name = "destination_hub_address", nullable = false, length = 255)
+	private String destinationHubAddress;
 
 	@Column(name = "hub_delivery_manager_name", length = 100)
 	private String hubDeliveryManagerName;
@@ -100,8 +103,9 @@ public class Delivery extends AbstractEntity {
 		String productName,
 		Integer productQuantity,
 		UUID departureHubId,
-		UUID stopoverHubId,
+		String departureHubAddress,
 		UUID destinationHubId,
+		String destinationHubAddress,
 		UUID receiptUserId,
 		String receiptUserName,
 		String receiptUserEmail,
@@ -115,8 +119,9 @@ public class Delivery extends AbstractEntity {
 		delivery.productQuantity = productQuantity;
 		delivery.status = DeliveryStatus.HUB_PENDING;
 		delivery.departureHubId = departureHubId;
-		delivery.stopoverHubId = stopoverHubId;
+		delivery.departureHubAddress = departureHubAddress;
 		delivery.destinationHubId = destinationHubId;
+		delivery.destinationHubAddress = destinationHubAddress;
 		delivery.receiptUserId = receiptUserId;
 		delivery.receiptUserName = receiptUserName;
 		delivery.receiptUserEmail = receiptUserEmail;
