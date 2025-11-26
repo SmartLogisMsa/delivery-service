@@ -11,6 +11,7 @@ import com.smartlogis.deliveryservice.application.service.DeliveryHistoryService
 import com.smartlogis.deliveryservice.application.service.DeliveryService;
 import com.smartlogis.deliveryservice.domain.entity.Delivery;
 import com.smartlogis.deliveryservice.domain.repository.DeliveryRepository;
+import com.smartlogis.deliveryservice.infrastructure.client.OrderServiceClient;
 import com.smartlogis.deliveryservice.infrastructure.client.ProductServiceClient;
 import com.smartlogis.deliveryservice.infrastructure.client.UserServiceClient;
 import com.smartlogis.deliveryservice.infrastructure.client.dto.ProductInfoResponse;
@@ -30,6 +31,7 @@ public class DeliveryEventListener {
 	private final DeliveryRepository deliveryRepository;
 	private final ProductServiceClient productServiceClient;
 	private final UserServiceClient userServiceClient;
+	private final OrderServiceClient orderServiceClient;
 
 	@RabbitListener(queues = RabbitMQConfig.DELIVERY_ROUTE_QUEUE)
 	@Transactional
@@ -39,7 +41,19 @@ public class DeliveryEventListener {
 		try {
 			logger.info("Product Service 호출 시작: productId={}", event.getProductId());
 			ProductInfoResponse product = productServiceClient.getProduct(event.getProductId()).getData();
-			logger.info("Product Service 호출 성공: productName={}, quantity={}", product.getProductName(), product.getQuantity());
+			logger.info("Product Service 호출 성공: productName={}", product.getProductName());
+
+			logger.info("Order Service 호출 시작: orderId={}", event.getOrderId());
+			com.smartlogis.deliveryservice.infrastructure.client.dto.OrderResponseWrapper order =
+				orderServiceClient.getOrder(event.getOrderId()).getData();
+			logger.info("Order Service 호출 성공: orderItems={}", order.getOrderItems().size());
+
+			Integer productQuantity = order.getOrderItems().stream()
+				.filter(item -> item.getProductId().equals(event.getProductId()))
+				.map(item -> item.getQuantity())
+				.findFirst()
+				.orElseThrow(() -> new RuntimeException("주문에서 상품을 찾을 수 없습니다: productId=" + event.getProductId()));
+			logger.info("주문에서 상품 수량 조회 성공: quantity={}", productQuantity);
 
 			logger.info("User Service 호출 시작: userId={}", event.getReceiptUserId());
 			UserInfoResponse user = userServiceClient.getUser(event.getReceiptUserId()).getData();
@@ -49,7 +63,7 @@ public class DeliveryEventListener {
 				event.getOrderId(),
 				event.getProductId(),
 				product.getProductName(),
-				product.getQuantity(),
+				productQuantity,
 				event.getDepartureHubId(),
 				event.getDepartureHubAddress(),
 				event.getDestinationHubId(),
